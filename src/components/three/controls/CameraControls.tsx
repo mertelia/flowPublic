@@ -164,7 +164,7 @@ export default function CameraControls() {
 
     window.setTimeout(() => {
       isCameraAnimating.current = false;
-    }, 900);
+    }, 800);
   };
 
   const nodeOffsets: Record<
@@ -231,7 +231,7 @@ export default function CameraControls() {
       targetOffset: new THREE.Vector3(-0.629, 16.813, -16.309),
       lightOffset: new THREE.Vector3(-0.629, 21.813, -116.309),
       lightTargetOffset: new THREE.Vector3(-0.629, 6.813, -183.691),
-      ambient: 0.5,
+      ambient: 1,
     },
     frontFillSpeaker: {
       cameraOffset: new THREE.Vector3(10.15, 5.783, -21.605),

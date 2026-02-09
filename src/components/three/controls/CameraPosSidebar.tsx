@@ -26,19 +26,19 @@ const LABEL_MAP: Record<(typeof ShowPartArray)[number], string> = {
   sideScreen: "Side Screens",
 };
 
-// Senin orijinal opaklık fonksiyonun
 const getOpacityByDistance = (distance: number) => {
-  if (distance === 0) return 1;
-  if (distance === 1) return 0.55;
-  if (distance === 2) return 0.35;
-  if (distance === 3) return 0.2;
-  return 0.15;
+  if (distance === 0) return 1; // active
+  if (distance === 1) return 0.65; // üst-alt
+  if (distance === 2) return 0.55;
+  if (distance === 3) return 0.45;
+  return 0.45;
 };
 
 export default function CameraPosSidebar() {
   const cameraPos = useFlowStore((s) => s.cameraPos);
   const canvasPos = useFlowStore((s) => s.canvasPos);
   const setCameraPos = useFlowStore((s) => s.setCameraPos);
+
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
 
@@ -55,9 +55,12 @@ export default function CameraPosSidebar() {
   const maskImage = useTransform(
     smoothY,
     (y) =>
-      `radial-gradient(ellipse 150% 120px at center ${y}px, black 30%, rgba(0,0,0,0.2) 100%)`,
+      `radial-gradient(
+      ellipse 150% 80px at center ${y}px,
+      black 25%,
+      rgba(0,0,0,0.08) 100%
+    )`,
   );
-
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!sidebarRef.current) return;
     const rect = sidebarRef.current.getBoundingClientRect();
@@ -65,11 +68,13 @@ export default function CameraPosSidebar() {
     if (!isHovering) setIsHovering(true);
   };
 
+  // hover yokken aktif item spotlight merkezine gelsin
   useEffect(() => {
     if (!isHovering && activeIndex !== -1 && sidebarRef.current) {
       const activeButton = sidebarRef.current.children[
         activeIndex
       ] as HTMLElement;
+
       if (activeButton) {
         mouseY.set(activeButton.offsetTop + activeButton.offsetHeight / 2);
       }
@@ -80,14 +85,13 @@ export default function CameraPosSidebar() {
     <AnimatePresence>
       {canvasPos === 2 && (
         <motion.div
-          exit={{ opacity: 0, x: -20 }}
           ref={sidebarRef}
+          exit={{ opacity: 0, x: -20 }}
           onMouseMove={handleMouseMove}
           onMouseLeave={() => setIsHovering(false)}
           className="fixed left-[5%] top-1/2 z-50 flex flex-col gap-4 -translate-y-1/2 text-main"
           style={{
             WebkitMaskImage: maskImage,
-
             maskImage: maskImage,
           }}
         >
@@ -96,19 +100,20 @@ export default function CameraPosSidebar() {
               activeIndex === -1 ? 99 : Math.abs(index - activeIndex);
 
             const opacity = getOpacityByDistance(distance);
+            const isActive = distance === 0;
 
             return (
               <motion.button
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
                 key={key}
+                initial={{ opacity: 0 }}
+                animate={{ opacity }}
+                transition={{ opacity: { duration: 0.25 } }}
                 onClick={() => setCameraPos(key)}
-                style={{ opacity }}
-                className="text-left cursor-pointer text-lg outline-none transition-opacity duration-300 hover:opacity-100! tracking-[-0.07em]  flex items-center gap-2  w-full"
+                className="flex w-full cursor-pointer items-center gap-2 text-left text-lg outline-none tracking-[-0.07em]"
               >
-                <div className="h-3 w-3 bg-main "></div>
-                <div className="whitespace-nowrap font-medium tracking-tight">
+                <div className="h-3 w-3 bg-main" />
+
+                <div className="whitespace-nowrap tracking-tight font-light ">
                   {LABEL_MAP[key]}
                 </div>
               </motion.button>

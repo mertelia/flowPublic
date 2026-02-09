@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Stage from "./Stage";
 import PartCompiler from "./parts/PartCompiler";
 import CameraControls from "./controls/CameraControls";
+import VideoPlane from "./parts/VideoPlane";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Scene() {
@@ -70,6 +71,7 @@ export default function Scene() {
         <CameraControls />
         <Stage />
         <PartCompiler />
+        <VideoPlane />
       </Canvas>
     </div>
   );

@@ -19,20 +19,16 @@ export default function PartAniShowcase({
 
   const group = useRef<THREE.Group>(null);
 
-  // 1. Sadece ilgili parçaya ait animasyon track'lerini filtrele
   const filteredAnimations = useMemo(() => {
     return animations.map((clip) => {
       const newClip = clip.clone();
-      // Sadece 'name' ile başlayan veya 'name' içeren track'leri tut
       newClip.tracks = newClip.tracks.filter((track) => {
-        // Track ismi genelde "ObjeAdi.quaternion" şeklindedir
         return track.name.includes(name);
       });
       return newClip;
     });
   }, [animations, name]);
 
-  // 2. Filtrelenmiş animasyonları kullan
   const { actions } = useAnimations(filteredAnimations, group);
 
   const { original, ghost } = useMemo(() => {

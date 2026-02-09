@@ -5,7 +5,7 @@ import { motion } from "framer-motion"; // Düzeltme: framer-motion import (eğe
 
 export default function Hero() {
   return (
-    <div className="h-[80vh] w-[90%] mx-auto flex justify-center items-center flex-col gap-12">
+    <div className="h-[80vh] w-[90%] mx-auto flex justify-center items-center flex-col gap-12 pt-24 md:pt-0">
       <motion.div
         className="flex justify-center items-center h-4 gap-2"
         initial={{ opacity: 0, y: 10 }}

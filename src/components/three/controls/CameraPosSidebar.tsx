@@ -89,7 +89,7 @@ export default function CameraPosSidebar() {
           exit={{ opacity: 0, x: -20 }}
           onMouseMove={handleMouseMove}
           onMouseLeave={() => setIsHovering(false)}
-          className="fixed left-[5%] top-1/2 z-50 flex flex-col gap-4 -translate-y-1/2 text-main"
+          className="fixed left-[5%] top-1/2 z-50 flex flex-col gap-4 -translate-y-1/2 text-main opacity-0 md:opacity-100"
           style={{
             WebkitMaskImage: maskImage,
             maskImage: maskImage,

@@ -1,16 +1,22 @@
 "use client";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
+
+interface ButtonProps {
+  fs?: number; // Opsiyonel
+  height?: number; // Opsiyonel
+  text: string; // Zorunlu (Yazısız buton olmaz)
+  href: string; // Zorunlu
+  className?: string; // Opsiyonel (Mobil hack'leri buraya gelecek)
+}
+
 export default function Button({
-  height,
-  fs,
+  fs = 25, // Default değerler
+  height = 28,
   text,
   href,
-}: {
-  height: number;
-  fs: number;
-  text: string;
-  href: string;
-}) {
+  className,
+}: ButtonProps) {
   const heightRem = height / 16;
   const fontSizeRem = fs / 16;
 
@@ -29,18 +35,20 @@ export default function Button({
         ease: "linear",
       }}
       onClick={handleClick}
-      style={{
-        height: `${heightRem}rem`,
-        fontSize: `${fontSizeRem}rem`,
-        letterSpacing: "-0.09em",
-      }}
-      className="text-main flex gap-2 pr-2 justify-between items-center bg-secondary/36 hover:bg-secondary/18 transition duration-125 cursor-pointer"
+      style={
+        {
+          height: `var(--btn-h, ${heightRem}rem)`,
+          fontSize: `var(--btn-fs, ${fontSizeRem}rem)`,
+          letterSpacing: "-0.09em",
+        } as any
+      }
+      className={`text-main flex gap-2 pr-2 justify-between items-center bg-secondary/36 hover:bg-secondary/18 transition duration-125 cursor-pointer shrink-0 ${className || ""}`}
     >
       <div
-        style={{ width: `${heightRem / 3}rem` }}
-        className="h-full bg-main"
+        style={{ width: `calc(var(--btn-h, ${heightRem}rem) / 3)` }}
+        className="h-full bg-main shrink-0"
       />
-      <div>{text}</div>
+      <div className="whitespace-nowrap px-1">{text}</div>
     </motion.button>
   );
 }

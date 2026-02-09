@@ -1,16 +1,13 @@
 "use client";
-import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
-import { useInView } from "framer-motion";
+import { useEffect, useRef, useLayoutEffect, useState } from "react"; // useLayoutEffect ekledik
+import { useInView, motion } from "framer-motion";
 import { useFlowStore, ShowPartArray } from "@/store/store";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Stage from "./Stage";
 import PartCompiler from "./parts/PartCompiler";
 import CameraControls from "./controls/CameraControls";
 import VideoPlane from "./parts/VideoPlane";
-gsap.registerPlugin(ScrollTrigger);
+import ResponsiveCamera from "./controls/ResponsiveCamera";
 
 export default function Scene() {
   const canvasWrapperRef = useRef<HTMLDivElement>(null);
@@ -19,7 +16,17 @@ export default function Scene() {
   const inViewLock = useFlowStore((s) => s.inViewLock);
   const setCameraPos = useFlowStore((s) => s.setCameraPos);
 
-  const isInView = useInView(canvasWrapperRef, { amount: 0.98 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
+  const isInView = useInView(canvasWrapperRef, {
+    amount: isMobile ? 0.8 : 0.98,
+  });
+  const scrollYRef = useRef(0);
+
   useEffect(() => {
     if (isInView && canvasPos !== 2 && !inViewLock) {
       setCanvasPos(2);
@@ -30,49 +37,41 @@ export default function Scene() {
     }
   }, [isInView, canvasPos, setCanvasPos, inViewLock, setCameraPos]);
 
-  const scrollYRef = useRef(0);
-
-  useEffect(() => {
-    if (!canvasWrapperRef.current) return;
-
-    const wrapper = canvasWrapperRef.current;
-
+  useLayoutEffect(() => {
     if (canvasPos === 2) {
       scrollYRef.current = window.scrollY;
-      gsap.set(wrapper, {
-        position: "fixed",
-        width: "100vw",
-        height: "100vh",
-        top: 0,
-        left: 0,
-        zIndex: 10,
-      });
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
-      gsap.set(wrapper, {
-        position: "relative",
-        width: "100vw",
-        height: "100vh",
-        top: "auto",
-        left: "auto",
-        zIndex: 10,
-      });
       window.scrollTo(0, scrollYRef.current);
     }
   }, [canvasPos]);
 
   return (
-    <div
-      ref={canvasWrapperRef}
-      className="w-screen h-screen overflow-hidden bg-black"
-    >
-      <Canvas shadows camera={{ fov: 45, position: [-0.7, 80, -170] }}>
-        <CameraControls />
-        <Stage />
-        <PartCompiler />
-        <VideoPlane />
-      </Canvas>
-    </div>
+    <>
+      <div className="absolute w-screen h-screen -z-10" />
+
+      <motion.div
+        ref={canvasWrapperRef}
+        style={{
+          position: canvasPos === 2 ? "fixed" : "relative",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 10,
+        }}
+        className="overflow-hidden bg-black"
+      >
+        <Canvas shadows camera={{ fov: 45, position: [-0.7, 80, -170] }}>
+          <CameraControls />
+          <Stage />
+          <PartCompiler />
+          <VideoPlane />
+          <ResponsiveCamera />
+        </Canvas>
+      </motion.div>
+      {canvasPos === 2 && <div style={{ height: "100vh" }} />}
+    </>
   );
 }

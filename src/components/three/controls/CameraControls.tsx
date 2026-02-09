@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { ShowPartArray } from "@/store/store";
 import { useFrame, useThree } from "@react-three/fiber";
-import gsap from "gsap";
 import { useMotionValue, useSpring } from "motion/react";
 
 export default function CameraControls() {
@@ -19,17 +18,19 @@ export default function CameraControls() {
   useEffect(() => {
     if (canvasPos !== 2) return;
 
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      if (Math.abs(e.deltaY) < 50) return;
+    // Mobilde parmağın başladığı yer
+    let touchStartY = 0;
+
+    const handleInput = (deltaY: number) => {
+      if (Math.abs(deltaY) < 50) return;
       if (isCameraAnimating.current) return;
 
       const { cameraPos, setCameraPos } = useFlowStore.getState();
-
       const index = ShowPartArray.indexOf(cameraPos);
       if (index === -1) return;
 
-      if (e.deltaY > 0) {
+      if (deltaY > 0) {
+        // Aşağı kaydırma / wheel down
         if (index === ShowPartArray.length - 1) {
           setInViewLock(true);
           setCanvasPos(3);
@@ -47,7 +48,6 @@ export default function CameraControls() {
           window.setTimeout(() => setInViewLock(false), 700);
           setCameraPos("idle");
           isCameraAnimating.current = true;
-
           return;
         }
         setCameraPos(ShowPartArray[index - 1]);
@@ -55,9 +55,29 @@ export default function CameraControls() {
       }
     };
 
-    window.addEventListener("wheel", handleWheel, { passive: false });
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      handleInput(e.deltaY);
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaY = touchStartY - touchEndY;
+      handleInput(deltaY);
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+
     return () => {
-      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
     };
   }, [canvasPos, setCanvasPos, setInViewLock]);
 

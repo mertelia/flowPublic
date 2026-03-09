@@ -5,6 +5,10 @@ Each presented with a 3D model and cinematic camera animations. As you scroll, t
 
 ![Flow Preview](public/flow1.png)
 
+# Demo
+You can check the live version:  
+[https://flowmusicevent.vercel.app/](https://flowmusicevent.vercel.app/)
+
 # Tech Stack
 - Next.js 
 - Three.js

@@ -1,6 +1,6 @@
 # Flow Music Event
-A client-oriented concept project for a fictional concert staging and technical production company. <br />
-Scroll-based experience featuring individual stage components like trusses, video walls, line speakers, delay towers. <br />
+A client-oriented concept project for a fictional concert staging and technical production company. <br /><br />
+Scroll-based experience featuring individual stage components like trusses, video walls, line speakers, delay towers. <br /><br />
 Each presented with a 3D model and cinematic camera animations. As you scroll, the camera smoothly moves to each component, revealing its  structural details, rigging setup and deployment step-by-step.
 
 ![Flow Preview](public/flow1.png)

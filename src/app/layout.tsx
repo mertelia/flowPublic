@@ -39,8 +39,7 @@ export default function RootLayout({
       >
         <Nav />
         <Hero />
-
-        {children}
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

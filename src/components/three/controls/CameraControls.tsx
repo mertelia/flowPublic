@@ -8,7 +8,6 @@ import { useMotionValue, useSpring } from "motion/react";
 
 export default function CameraControls() {
   //Store
-  const setCameraPos = useFlowStore((s) => s.setCameraPos);
   const cameraPos = useFlowStore((s) => s.cameraPos);
   const canvasPos = useFlowStore((s) => s.canvasPos);
   const setCanvasPos = useFlowStore((s) => s.setCanvasPos);

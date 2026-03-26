@@ -28,7 +28,7 @@ const LABEL_MAP: Record<(typeof ShowPartArray)[number], string> = {
 
 const getOpacityByDistance = (distance: number) => {
   if (distance === 0) return 1; // active
-  if (distance === 1) return 0.65; // üst-alt
+  if (distance === 1) return 0.65;
   if (distance === 2) return 0.55;
   if (distance === 3) return 0.45;
   return 0.45;
@@ -68,7 +68,6 @@ export default function CameraPosSidebar() {
     if (!isHovering) setIsHovering(true);
   };
 
-  // hover yokken aktif item spotlight merkezine gelsin
   useEffect(() => {
     if (!isHovering && activeIndex !== -1 && sidebarRef.current) {
       const activeButton = sidebarRef.current.children[
@@ -100,7 +99,6 @@ export default function CameraPosSidebar() {
               activeIndex === -1 ? 99 : Math.abs(index - activeIndex);
 
             const opacity = getOpacityByDistance(distance);
-            const isActive = distance === 0;
 
             return (
               <motion.button
